@@ -1,4 +1,9 @@
-langchain
 streamlit
-openai
-faiss
+langchain
+langchain-openai
+langchain-chroma
+langchain-community
+langchain-core
+bs4
+yaml
+recursive-character-text-splitter

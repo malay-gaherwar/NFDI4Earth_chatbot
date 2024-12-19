@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 from langchain_openai.chat_models import ChatOpenAI
-import bs4
 from langchain import hub
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import WebBaseLoader

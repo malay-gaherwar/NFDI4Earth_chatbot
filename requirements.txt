@@ -5,5 +5,6 @@ langchain-chroma == 0.1.4
 langchain-community == 0.3.1
 langchain-core == 0.3.10
 langchain-text-splitters  == 0.3.0
+beautifulsoup4  == 4.12.2
 pysqlite3-binary
 

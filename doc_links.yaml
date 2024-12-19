@@ -1,7 +1,31 @@
-
 doc_links:
-  - https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI2.md
-  - https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI3.md
-  - https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI4.md
-  - https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM1.md
-  
+  - title: What is NFDI4Earth?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI1.md
+  - title: What does the NFDI4Earth offer? 
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI2.md
+  - title: How can I contribute to the NFDI4Earth?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI3.md
+  - title: Where does the content in the NFDI4Earth come from?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI4.md
+  - title: How can I publish my data?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM1.md
+  - title: What are the FAIR principles? 
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM2.md
+  - title: What is a research data management plan?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM3.md
+  - title: How do I cite research data correctly?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM4.md
+  - title: Why does publishing data in FAIR repositories take so long compared to Zenodo?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM5.md
+  - title: What license should I use for publishing my data?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM6.md
+  - title: What are metadata, and why is it important to add metadata to datasets?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM7.md
+  - title: What is a DOI? Or a PID?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM8.md
+  - title: How can I find a suitable repository for my data?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM9.md
+  - title: How do I decide which data I should keep and archive and which I can delete?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM10.md
+  - title: What is the difference between storing, publishing and long-term storage of/archiving research data?
+    url: https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM11.md

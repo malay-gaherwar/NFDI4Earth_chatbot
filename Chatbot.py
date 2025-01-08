@@ -4,7 +4,6 @@ import sys
 sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import streamlit as st
 from langchain_openai.chat_models import ChatOpenAI
-import bs4
 from langchain import hub
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import WebBaseLoader
@@ -12,7 +11,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_core.prompts import PromptTemplate
+from langchain import PromptTemplate
+from langchain import hub
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 import yaml

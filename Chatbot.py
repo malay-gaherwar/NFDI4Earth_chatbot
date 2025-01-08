@@ -1,10 +1,7 @@
 import os
-import pysqlite3
-import sys
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import streamlit as st
-import bs4
 from langchain_openai.chat_models import ChatOpenAI
+import bs4
 from langchain import hub
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import WebBaseLoader

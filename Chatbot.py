@@ -1,7 +1,7 @@
 import pysqlite3
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import sys
 import os
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import streamlit as st
 from langchain_openai.chat_models import ChatOpenAI
 from langchain import hub

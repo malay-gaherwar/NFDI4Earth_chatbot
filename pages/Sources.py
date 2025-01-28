@@ -5,7 +5,8 @@ import yaml
 if "doc_links" not in st.session_state:
   with open("doc_links.yaml", "r") as f:
     data = yaml.safe_load(f)
-    st.session_state["doc_links"] = data["doc_links"]
+    st.session_state["doc_links"] = [doc["url"] for doc in data["doc_links"]] 
+    
 
 
 # Define a function to manage source links

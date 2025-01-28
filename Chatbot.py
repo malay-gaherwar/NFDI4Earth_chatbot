@@ -1,10 +1,7 @@
 import os
-import pysqlite3
-import sys
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 import streamlit as st
-import bs4
 from langchain_openai.chat_models import ChatOpenAI
+import bs4
 from langchain import hub
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import WebBaseLoader
@@ -13,7 +10,6 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
-from langchain import hub
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 import yaml
@@ -21,21 +17,26 @@ import yaml
 st.set_page_config(page_title=None, page_icon=None, layout="centered", initial_sidebar_state="expanded", menu_items=None)
 st.title("LLM-powered chatbot for NFDI4Earth")
 
-open_api_key =os.environ["OPENAI_API_KEY"] = st.text_input("Enter your OpenAI API Key:", type="password")
-
+# Ensure API key and conversation history persist
+if "open_api_key" not in st.session_state:
+    st.session_state["open_api_key"] = ""
 
 if "conversation_history" not in st.session_state:
-  st.session_state["conversation_history"] = []
-
+    st.session_state["conversation_history"] = []
 
 if "doc_links" not in st.session_state:
-  with open("doc_links.yaml", "r") as f:
-    data = yaml.safe_load(f)
-    st.session_state["doc_links"] = data["doc_links"]
- 
+    with open("doc_links.yaml", "r") as f:
+        data = yaml.safe_load(f)
+        st.session_state["doc_links"] = data["doc_links"]
+
+# Sidebar: Enter API Key
 with st.sidebar:
-  expanded = st.sidebar.expander("Document Links", expanded=False)
-  
+    st.text("Enter your API Key:")
+    st.session_state["open_api_key"] = st.text_input("OpenAI API Key", type="password", value=st.session_state["open_api_key"])
+    expanded = st.sidebar.expander("Document Links", expanded=False)
+
+os.environ["OPENAI_API_KEY"] = st.session_state["open_api_key"]
+
 def format_output(output):
     """
     Formats the RAG chain output with Answer: and Source: labels.
@@ -51,17 +52,15 @@ def format_output(output):
     return f"Answer: {answer}\nSource: {source_link}"
 
 
-
-def generate_response(input_text, doc_links,open_api_key, conversation_history):
-    
+def generate_response(input_text, doc_links):
     llm = ChatOpenAI(model="gpt-4o-mini")
-    loader = WebBaseLoader(doc_links)#["https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI2.md", "https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI3.md", "https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_NFDI4.md","https://git.rwth-aachen.de/nfdi4earth/livinghandbook/livinghandbook/-/raw/main/docs/FAQ_RDM1.md"])
+    loader = WebBaseLoader(doc_links)
     docs = loader.load()
     for doc in docs:
         if doc.page_content.startswith('---'):
             parts = doc.page_content.split('---', 2)  # Split into three parts
             doc.page_content = parts[2].strip() if len(parts) > 2 else doc.page_content
-    
+
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
     splits = text_splitter.split_documents(docs)
     vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
@@ -84,26 +83,27 @@ def generate_response(input_text, doc_links,open_api_key, conversation_history):
     user_question = input_text
     output = rag_chain.invoke({"input": user_question})  
     formatted_output = format_output(output)    
-    
+
+    # Update conversation history in session state
     st.session_state["conversation_history"].append({"question": user_question, "answer": formatted_output})
+
+    # Display conversation history
     for item in reversed(st.session_state["conversation_history"]):
         with st.container():
             st.write(f"You: {item['question']}")
             st.write(f"Chatbox {item['answer']}")
 
-    #st.write(formatted_output)
 
-
-#"""
+# Input and Form
 with st.form("my_form"):
     text = st.text_area(
         "Enter your question below:",
         "What is NFDI4Earth?",
     )
     submitted = st.form_submit_button("Submit")
-if not open_api_key.startswith("sk-"):
+
+# Warnings and Response Generation
+if not st.session_state["open_api_key"].startswith("sk-"):
     st.warning("Please enter your OpenAI API key!", icon="⚠")
-if submitted and  open_api_key.startswith("sk-"):
-    generate_response(text,st.session_state["doc_links"],open_api_key, st.session_state["conversation_history"])
-#"""
-#generate_response("How can I contribute to NFDI4Earth?")
+if submitted and st.session_state["open_api_key"].startswith("sk-"):
+    generate_response(text, st.session_state["doc_links"])

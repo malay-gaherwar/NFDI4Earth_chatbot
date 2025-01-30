@@ -15,7 +15,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 import yaml
 
 st.set_page_config(page_title=None, page_icon=None, layout="centered", initial_sidebar_state="expanded", menu_items=None)
-st.title("LLM-powered chatbot for NFDI4Earth")
+st.title("LLM-powered chatbot for NFDI4Earth (Test Version)")
 
 # Ensure API key and conversation history persist
 if "open_api_key" not in st.session_state:

@@ -15,12 +15,9 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 import yaml
 
 st.set_page_config(page_title=None, page_icon=None, layout="centered", initial_sidebar_state="expanded", menu_items=None)
-st.title("LLM-powered chatbot for NFDI4Earth (Test Version)")
+st.title("LLM-powered chatbot for NFDI4Earth")
 
-# Ensure API key and conversation history persist
-if "open_api_key" not in st.session_state:
-    st.session_state["open_api_key"] = ""
-
+# Ensure conversation history persists
 if "conversation_history" not in st.session_state:
     st.session_state["conversation_history"] = []
 
@@ -29,13 +26,18 @@ if "doc_links" not in st.session_state:
         data = yaml.safe_load(f)
         st.session_state["doc_links"] = data["doc_links"]
 
-# Sidebar: Enter API Key
-with st.sidebar:
-    st.text("Enter your API Key:")
-    st.session_state["open_api_key"] = st.text_input("OpenAI API Key", type="password", value=st.session_state["open_api_key"])
-    expanded = st.sidebar.expander("Document Links", expanded=False)
+# Read OpenAI API key from environment variable
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
-os.environ["OPENAI_API_KEY"] = st.session_state["open_api_key"]
+# Sidebar: Display API Key status
+with st.sidebar:
+    st.text("API Key Status:")
+    if openai_api_key:
+        st.success("API Key is set.")
+    else:
+        st.error("API Key is missing. Please set the OPENAI_API_KEY environment variable.")
+
+    expanded = st.sidebar.expander("Document Links", expanded=False)
 
 def format_output(output):
     """
@@ -53,7 +55,11 @@ def format_output(output):
 
 
 def generate_response(input_text, doc_links):
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    if not openai_api_key:
+        st.error("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
+        return
+
+    llm = ChatOpenAI(model="gpt-4o-mini", openai_api_key=openai_api_key)
     loader = WebBaseLoader(doc_links)
     docs = loader.load()
     for doc in docs:
@@ -63,7 +69,7 @@ def generate_response(input_text, doc_links):
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
     splits = text_splitter.split_documents(docs)
-    vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+    vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings(openai_api_key=openai_api_key))
     retriever = vectorstore.as_retriever()
     template = """You are a helpful and informative AI assistant. Use the following information to answer the question:
 
@@ -103,7 +109,7 @@ with st.form("my_form"):
     submitted = st.form_submit_button("Submit")
 
 # Warnings and Response Generation
-if not st.session_state["open_api_key"].startswith("sk-"):
-    st.warning("Please enter your OpenAI API key!", icon="⚠")
-if submitted and st.session_state["open_api_key"].startswith("sk-"):
+if not openai_api_key:
+    st.warning("Please set the OPENAI_API_KEY environment variable!", icon="⚠")
+if submitted and openai_api_key:
     generate_response(text, st.session_state["doc_links"])

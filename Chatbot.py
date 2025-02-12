@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 st.set_page_config(page_title=None, page_icon=None, layout="centered", initial_sidebar_state="expanded", menu_items=None)
-st.title("LLM-powered chatbot for NFDI4Earth")
+st.title("LLM-powered chatbot for NFDI4Earth (Test version)")
 
 # Ensure conversation history persists
 if "conversation_history" not in st.session_state:

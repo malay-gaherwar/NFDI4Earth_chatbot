@@ -43,19 +43,26 @@ with st.sidebar:
 
     expanded = st.sidebar.expander("Document Links", expanded=False)
 
-def format_output(output):
+def format_output(output, similarity_score):
     """
-    Formats the RAG chain output with Answer: and Source: labels.
+    Formats the RAG chain output with Answer: and Source: labels based on the similarity score.
 
     Args:
         output: Dictionary containing answer and context information
+        similarity_score: The similarity score of the retrieved document
 
     Returns:
-        Formatted string with answer and source information
+        Formatted string with answer and source information (if similarity score is below 0.3)
     """
     answer = output["answer"]
     source_link = output["context"][0].metadata["source"]
-    return f"Answer: {answer}\nSource: {source_link}"
+
+    # If similarity score is less than 0.3, include the source
+    if similarity_score < 0.3:
+        return f"Answer: {answer}\nSource: {source_link}"
+    else:
+        # Otherwise, return only the answer
+        return f"Answer: {answer}"
 
 
 def generate_response(input_text, doc_links):
@@ -75,6 +82,9 @@ def generate_response(input_text, doc_links):
     splits = text_splitter.split_documents(docs)
     vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings(openai_api_key=openai_api_key))
     retriever = vectorstore.as_retriever()
+    docs_with_scores = vectorstore.similarity_search_with_score(input_text, k=3)
+    similar_docs_with_scores = vectorstore.similarity_search_with_score(input_text)
+    similarity_score = similar_docs_with_scores[0][1]  
     template = """You are a helpful and informative AI assistant. Use the following information to answer the question:
 
     {context}
@@ -92,11 +102,10 @@ def generate_response(input_text, doc_links):
     rag_chain = create_retrieval_chain(vectorstore.as_retriever(), combine_docs_chain)
     user_question = input_text
     output = rag_chain.invoke({"input": user_question})  
-    formatted_output = format_output(output)    
-
+    formatted_output = format_output(output,similarity_score)    
+    
     # Update conversation history in session state
     st.session_state["conversation_history"].append({"question": user_question, "answer": formatted_output})
-
     # Display conversation history
     for item in reversed(st.session_state["conversation_history"]):
         with st.container():
